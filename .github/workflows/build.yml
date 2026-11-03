@@ -21,13 +21,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.82.0
         with:
           components: clippy
+          targets: i686-pc-windows-msvc
       - name: Cargo check
-        run: cargo check --features debug --all-targets
+        run: cargo check --features debug --all-targets --target i686-pc-windows-msvc
       - name: Cargo clippy
-        run: cargo clippy --features debug --all-targets
+        run: cargo clippy --features debug --all-targets --target i686-pc-windows-msvc
 
   fmt:
     name: Format
@@ -68,12 +69,12 @@ jobs:
         if: matrix.build == 'zigbuild'
         run: pip install ziglang==0.10.1.post1 cargo-zigbuild==0.17.0
       - name: Setup Rust toolchain
-        uses: dtolnay/rust-toolchain@nightly
+        # Pinned stable toolchain: current nightlies no longer build the 2023 dependency set
+        uses: dtolnay/rust-toolchain@1.82.0
         with:
-          components: rust-src
           targets: ${{ matrix.target }}
       - name: Cargo build
-        run: cargo ${{ matrix.build }} --release --features nightly --target ${{ matrix.target }} --bin ${{ env.CARGO_BIN_NAME }} -Z build-std=std,panic_abort
+        run: cargo ${{ matrix.build }} --release --locked --target ${{ matrix.target }} --bin ${{ env.CARGO_BIN_NAME }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
