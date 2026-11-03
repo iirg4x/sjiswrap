@@ -52,3 +52,9 @@ at your option.
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as
 defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
+
+## Excluding vendor directories (fork addition)
+
+Set `SJISWRAP_EXCLUDE_DIRS` to a list of directories (separated like `PATH`). Files inside them are passed to the
+compiler unconverted, as the original toolchain read them. Use it for verbatim SDK or vendor headers that are not
+UTF-8, such as the Metrowerks MSL headers with their raw copyright byte.

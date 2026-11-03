@@ -19,7 +19,7 @@ jobs:
       RUSTFLAGS: -D warnings
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -36,7 +36,7 @@ jobs:
       RUSTFLAGS: -D warnings
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Rust toolchain
         # We use nightly options in rustfmt.toml
         uses: dtolnay/rust-toolchain@nightly
@@ -58,7 +58,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install dependencies
         if: matrix.packages != ''
         run: |
@@ -75,7 +75,7 @@ jobs:
       - name: Cargo build
         run: cargo ${{ matrix.build }} --release --features nightly --target ${{ matrix.target }} --bin ${{ env.CARGO_BIN_NAME }} -Z build-std=std,panic_abort
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
           path: |
@@ -92,7 +92,7 @@ jobs:
     needs: [ build ]
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
       - name: Rename artifacts
@@ -104,6 +104,6 @@ jobs:
           done
           ls -R ../out
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: out/*

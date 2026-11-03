@@ -34,6 +34,21 @@ use windows::{
 
 /// Whether to hook and encode a file.
 fn is_text_file(path: &Path) -> bool {
+    // Project extension: raw SDK/vendor files must not be UTF-8 transcoded.
+    // Use canonical paths so relative includes and junctions share this policy.
+    if let Some(excluded) = std::env::var_os("SJISWRAP_EXCLUDE_DIRS") {
+        if let Ok(absolute) = path.canonicalize() {
+            let absolute = PathBuf::from(absolute.to_string_lossy().to_ascii_lowercase());
+            for directory in std::env::split_paths(&excluded) {
+                if let Ok(directory) = directory.canonicalize() {
+                    let directory = PathBuf::from(directory.to_string_lossy().to_ascii_lowercase());
+                    if absolute.starts_with(directory) {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
     let Some(ext) = path.extension() else {
         return false;
     };
